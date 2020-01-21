@@ -17,7 +17,6 @@ Author: Matthieu Heitz
 import json
 import numpy as np
 import datetime
-import math
 
 
 # Helper functions
@@ -66,18 +65,23 @@ n = len(data)   # Number of timesteps
 print("Extracting relevant data...")
 timestampMs = np.zeros(n)   # in milliseconds
 positions = np.zeros([n,2])  # in degrees
-accuracy = np.zeros(n)      # in %
+# accuracy = np.zeros(n)      # don't know the unit
 # activity = {}         # Don't store activity since we don't use it
+
 for i in range(n):
     point = data[i]
-    timestampMs[i] = float(point['timestampMs'])
-    positions[i] = np.array([float(point['latitudeE7']),float(point['longitudeE7'])])/1e7
-    accuracy[i] = point['accuracy']
-    # if 'activity' in point: activity[i] = point['activity']
+    if 'timestampMs' in point:
+        timestampMs[i] = float(point['timestampMs'])
+    if ('latitudeE7' in point) and ('longitudeE7' in point):
+        positions[i] = np.array([float(point['latitudeE7']),float(point['longitudeE7'])])/1e7
+    # if 'accuracy' in point:
+    #     accuracy[i] = point['accuracy']
+    # if 'activity' in point:
+    #     activity[i] = point['activity']
 
 # n_act = len(activity.keys())
-# print("Total of points with activity: %d  (%0.1f%%)"%(n_act,int(n_act/n*100)))
-print("Total of points: %d"%n)
+# print("Total number of points with activity: %d  (%0.1f%%)"%(n_act,int(n_act/n*100)))
+print("Total number of points: %d"%n)
 
 # Free some memory
 data.clear()
