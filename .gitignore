@@ -3,3 +3,6 @@
 
 # My location history
 location_history.json
+
+# Other test datasets
+datasets/

@@ -112,9 +112,13 @@ group_verbosity = 1
 # END OF USER INPUT
 ####################
 
+# Converter
+ts2datetime = lambda x: datetime.datetime.utcfromtimestamp(int(x/1e3)).strftime('%Y-%m-%d %H:%M:%S')
+
 # Get time boundary index
-begin_index = np.argmax(timestampMs >= begin_ts)
-end_index = np.argmax(timestampMs >= end_ts)
+# np.searchsorted is a fast way to find the first element that is larger than the threshold. 1 is for True
+begin_index = np.searchsorted(timestampMs >= begin_ts, 1)
+end_index = np.searchsorted(timestampMs >= end_ts, 1)
 
 # Get group_size in milliseconds
 grpsMs =  group_size.total_seconds()*1000
@@ -131,9 +135,8 @@ for i in range(begin_index,end_index):
         dist2poi.append(dist)
 
 close_points = np.array(close_points)
-print("Number of close points: %d"%close_points.size)
+print("Number of close points: %d\n"%close_points.size)
 
-ts2datetime = lambda x: datetime.datetime.utcfromtimestamp(int(x/1e3)).strftime('%Y-%m-%d %H:%M:%S')
 
 prev = 0    # Keeps in memory the last timestamp displayed
 for i in range(close_points.size):
@@ -145,14 +148,14 @@ for i in range(close_points.size):
             if group_verbosity == 1:
                 print("\tGroup of %d points"%(i-prev-2))
             if group_verbosity == 2:
-                print("\tGroup of %d points: %d -> %d"%(i-prev-2,close_points[prev+1],close_points[i-1]))
+                print("\n\tGroup of %d points: %d -> %d"%(i-prev-2,close_points[prev+1],close_points[i-1]))
                 pt_date_im1 = ts2datetime(timestampMs[close_points[i-1]])
                 pt_date_prevp1 = ts2datetime(timestampMs[close_points[prev+1]])
                 print("\tFrom: %s"%pt_date_prevp1)
                 print("\tTo  : %s"%pt_date_im1)
-                print("\tMean dist to POI: %0.1fm"%np.mean(dist2poi[prev+1:i]))
+                print("\tMean dist to POI: %0.1fm\n"%np.mean(dist2poi[prev+1:i]))
 
-        if group_verbosity == 2: print()    # Add space between lines
+        # if group_verbosity == 2: print()    # Add space between lines
         # Else, display the point, unless it's the end
         if i != close_points.size:
             pt_date = ts2datetime(timestampMs[close_points[i]])
