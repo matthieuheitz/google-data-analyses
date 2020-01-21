@@ -65,7 +65,7 @@ n = len(data)   # Number of timesteps
 print("Extracting relevant data...")
 timestampMs = np.zeros(n)   # in milliseconds
 positions = np.zeros([n,2])  # in degrees
-# accuracy = np.zeros(n)      # don't know the unit
+accuracy = np.zeros(n)      # don't know the unit
 # activity = {}         # Don't store activity since we don't use it
 
 for i in range(n):
@@ -74,8 +74,8 @@ for i in range(n):
         timestampMs[i] = float(point['timestampMs'])
     if ('latitudeE7' in point) and ('longitudeE7' in point):
         positions[i] = np.array([float(point['latitudeE7']),float(point['longitudeE7'])])/1e7
-    # if 'accuracy' in point:
-    #     accuracy[i] = point['accuracy']
+    if 'accuracy' in point:
+        accuracy[i] = point['accuracy']
     # if 'activity' in point:
     #     activity[i] = point['activity']
 
