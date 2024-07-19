@@ -1,0 +1,2 @@
+python-dateutil>=2.8.1
+numpy>=1.8.0
